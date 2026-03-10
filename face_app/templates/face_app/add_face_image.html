@@ -1,0 +1,149 @@
+{% extends 'face_app/base.html' %}
+
+{% block title %}Add Face Photo - Face Recognition{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-image"></i> Upload Face Photo for {{ person.name }}
+                    </h4>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="image" class="form-label fw-bold d-block mb-3">
+                                Select Photo
+                            </label>
+                            <div class="border-2 border-dashed p-5 rounded text-center upload-area" id="uploadArea">
+                                <i class="bi bi-cloud-upload fs-1 text-primary mb-2 d-block"></i>
+                                <p class="mb-2">Drag and drop your photo here or click to browse</p>
+                                <small class="text-muted">Supported formats: JPG, PNG (Max 5MB)</small>
+                                <input 
+                                    type="file" 
+                                    class="form-control d-none" 
+                                    id="image" 
+                                    name="image" 
+                                    accept="image/*"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div id="preview" class="mb-4 d-none">
+                            <img id="previewImage" class="img-fluid rounded" alt="Preview">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex gap-2 justify-content-center">
+                            <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                                <i class="bi bi-upload"></i> Upload Photo
+                            </button>
+                            <a href="{% url 'person_detail' person.id %}" class="btn btn-outline-secondary btn-lg flex-grow-1">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Photos -->
+            {% if face_images %}
+                <div class="card shadow-lg">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-images"></i> Existing Photos ({{ face_images.count }})
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% for face_img in face_images %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="position-relative">
+                                        <img src="{{ face_img.image.url }}" alt="Face photo" class="img-fluid rounded">
+                                        <small class="d-block mt-2 text-muted">
+                                            {{ face_img.uploaded_at|date:"M d, Y H:i" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="mt-4 text-center">
+                <a href="{% url 'person_detail' person.id %}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Back to Profile
+                </a>
+                <a href="{% url 'recognize_webcam' %}" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Start Recognition
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .upload-area {
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .upload-area:hover {
+        background-color: #f0f7ff;
+        border-color: #0d6efd !important;
+    }
+    
+    .upload-area.dragover {
+        background-color: #e7f0ff;
+        border-color: #0d6efd !important;
+    }
+</style>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const previewImage = document.getElementById('previewImage');
+
+    // Click to upload
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        fileInput.files = e.dataTransfer.files;
+        handleFileSelect();
+    });
+
+    // File input change
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                preview.classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+{% endblock %}

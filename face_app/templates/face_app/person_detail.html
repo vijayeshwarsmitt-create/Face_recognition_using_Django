@@ -1,0 +1,210 @@
+{% extends 'face_app/base.html' %}
+
+{% block title %}Person Detail - Face Recognition{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Person Header Card -->
+            <div class="card shadow-xl border-0 rounded-lg mb-4 overflow-hidden">
+                <div class="card-body p-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center mb-4 mb-md-0">
+                            {% if person.face_images.first.image %}
+                                <img src="{{ person.face_images.first.image.url }}" alt="{{ person.name }}" 
+                                     class="rounded-circle border-4" width="150" height="150" style="object-fit: cover; border-color: rgba(255,255,255,0.3);">
+                            {% else %}
+                                <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                                     style="width: 150px; height: 150px; background: rgba(255,255,255,0.2);">
+                                    <i class="bi bi-person" style="font-size: 4rem; color: white;"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h1 class="display-5 fw-bold mb-1">{{ person.name }}</h1>
+                            <p class="fs-5 opacity-75 mb-4">ID: #{{ person.id }}</p>
+                            
+                            <div class="row text-white">
+                                <div class="col-md-3 mb-3">
+                                    <div class="bg-white bg-opacity-20 rounded p-3">
+                                        <small class="opacity-75">Age</small>
+                                        <div class="fs-5 fw-bold">
+                                            {% if person.age %}
+                                                {{ person.age }} years
+                                            {% else %}
+                                                <span class="opacity-50">—</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="bg-white bg-opacity-20 rounded p-3">
+                                        <small class="opacity-75">
+                                            <i class="bi bi-geo-alt"></i> Location
+                                        </small>
+                                        <div class="fs-5 fw-bold text-truncate">
+                                            {% if person.place %}
+                                                {{ person.place }}
+                                            {% else %}
+                                                <span class="opacity-50">—</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <div class="bg-white bg-opacity-20 rounded p-3">
+                                        <small class="opacity-75">
+                                            <i class="bi bi-briefcase"></i> Occupation
+                                        </small>
+                                        <div class="fs-5 fw-bold text-truncate">
+                                            {% if person.work %}
+                                                {{ person.work }}
+                                            {% else %}
+                                                <span class="opacity-50">—</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 mb-4 flex-wrap">
+                <a href="{% url 'add_face_image' person.id %}" class="btn btn-success btn-lg rounded-lg shadow-sm hover-lift">
+                    <i class="bi bi-plus-circle"></i> Add More Photos
+                </a>
+                <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-lg rounded-lg">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <a href="{% url 'delete_person' person.id %}" class="btn btn-danger btn-lg rounded-lg ms-auto">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+
+            <!-- Face Images Gallery -->
+            <div class="card shadow-lg border-0 rounded-lg mb-4">
+                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="mb-0 py-2">
+                        <i class="bi bi-images"></i> Face Photos
+                        <span class="badge bg-light text-dark ms-2">{{ face_images.count }}</span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {% if face_images %}
+                        <div class="row g-3">
+                            {% for face_img in face_images %}
+                                <div class="col-md-4 col-lg-3">
+                                    <div class="card border-0 shadow-sm hover-card-zoom">
+                                        <img src="{{ face_img.image.url }}" alt="Face photo" class="card-img-top rounded-top" style="height: 250px; object-fit: cover;">
+                                        <div class="card-body p-3">
+                                            <small class="text-muted d-block">
+                                                <i class="bi bi-calendar"></i> {{ face_img.uploaded_at|date:"M d, Y H:i" }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-image" style="font-size: 3rem; color: #ccc;"></i>
+                            <p class="text-muted mt-3">No face photos yet. <a href="{% url 'add_face_image' person.id %}">Add one now</a></p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recognition History -->
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white;">
+                    <h5 class="mb-0 py-2">
+                        <i class="bi bi-clock-history"></i> Recent Recognition Activity
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recognitions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="py-3">Date & Time</th>
+                                        <th class="py-3">Confidence</th>
+                                        <th class="py-3">Match Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for recognition in recognitions %}
+                                    <tr class="border-bottom">
+                                        <td class="py-3">
+                                            <small class="text-muted">{{ recognition.recognized_at|date:"M d, Y H:i:s" }}</small>
+                                        </td>
+                                        <td class="py-3">
+                                            <div class="progress" style="height: 25px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio recognition.confidence 1 100 %}%" 
+                                                     aria-valuenow="{% widthratio recognition.confidence 1 100 %}" aria-valuemin="0" aria-valuemax="100">
+                                                    <small class="fw-bold">{% widthratio recognition.confidence 1 100 %}%</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3">
+                                            {% if recognition.confidence_level == 'high' %}
+                                                <span class="badge bg-success rounded-pill">
+                                                    <i class="bi bi-check-circle"></i> High
+                                                </span>
+                                            {% elif recognition.confidence_level == 'medium' %}
+                                                <span class="badge bg-warning rounded-pill">
+                                                    <i class="bi bi-exclamation-circle"></i> Medium
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary rounded-pill">
+                                                    <i class="bi bi-question-circle"></i> Low
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <p class="text-muted">
+                                <i class="bi bi-inbox" style="font-size: 2rem; color: #ccc;"></i>
+                                <br>No recognition history yet for this person.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+}
+
+.hover-card-zoom {
+    transition: all 0.3s ease;
+}
+
+.hover-card-zoom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+</style>
+
+{% endblock %}
