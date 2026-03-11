@@ -1,0 +1,75 @@
+venv\Scripts\python.
+exe : Traceback 
+(most recent call 
+last):
+At line:1 char:1
++ venv\Scripts\pytho
+n.exe manage.py 
+check 2>&1 | 
+out-file -encoding 
+asc ...
++ ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~
+    + CategoryInfo  
+            : 
+NotSpecified    : 
+(Traceback (most    
+ recent call 
+last)::    String) 
+[], RemoteE    
+xception
+    + 
+FullyQualifiedErr   
+ orId : 
+NativeComman    
+dError
+ 
+  File "C:\Users\vij
+ay\OneDrive\Desktop\
+Face_recognition_usi
+ng_Django\manage.py"
+, line 11, in main
+    from django.core
+.management import e
+xecute_from_command_
+line
+ModuleNotFoundError:
+ No module named 
+'django'
+
+The above exception 
+was the direct 
+cause of the 
+following exception:
+
+Traceback (most 
+recent call last):
+  File "C:\Users\vij
+ay\OneDrive\Desktop\
+Face_recognition_usi
+ng_Django\manage.py"
+, line 22, in 
+<module>
+    main()
+    ~~~~^^
+  File "C:\Users\vij
+ay\OneDrive\Desktop\
+Face_recognition_usi
+ng_Django\manage.py"
+, line 13, in main
+    raise 
+ImportError(
+    ...<3 lines>...
+    ) from exc
+ImportError: 
+Couldn't import 
+Django. Are you 
+sure it's installed 
+and available on 
+your PYTHONPATH 
+environment 
+variable? Did you 
+forget to activate 
+a virtual 
+environment?
