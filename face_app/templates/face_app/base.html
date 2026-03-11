@@ -7,34 +7,43 @@
     <title>{% block title %}Face Recognition System{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'face_app/css/style.css' %}">
     {% block extra_css %}{% endblock %}
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid px-4">
             <a class="navbar-brand" href="{% url 'index' %}">
-                <i class="bi bi-camera-video"></i> Face Recognition
+                <i class="bi bi-face-mask"></i> 
+                <span>FaceAI</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">
-                            <i class="bi bi-house"></i> Home
+                            <i class="bi bi-house-fill"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'recognize_webcam' %}">
-                            <i class="bi bi-search"></i> Recognize
+                            <i class="bi bi-camera-video-fill"></i> Recognize
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'register_person' %}">
-                            <i class="bi bi-person-plus"></i> Register
+                            <i class="bi bi-person-plus-fill"></i> Register
                         </a>
                     </li>
                     <li class="nav-item">
@@ -49,10 +58,10 @@
 
     <!-- Messages -->
     {% if messages %}
-        <div class="container-fluid mt-2">
+        <div class="container-fluid px-4 mt-3">
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    <i class="bi bi-info-circle"></i> {{ message }}
+                    <i class="bi bi-check-circle"></i> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
@@ -65,9 +74,18 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light text-center py-4 mt-5">
+    <footer class="text-center py-5 mt-5">
         <div class="container">
-            <p class="mb-0">&copy; 2026 Face Recognition System. All rights reserved.</p>
+            <div class="mb-3">
+                <h5 class="text-white mb-2">
+                    <i class="bi bi-face-mask"></i> FaceAI Recognition System
+                </h5>
+                <p class="text-muted mb-0">Advanced Real-Time Face Recognition & Management</p>
+            </div>
+            <hr class="border-secondary opacity-25 my-3">
+            <p class="text-muted mb-0">
+                <small>&copy; 2026 Face Recognition System. Powered by AI & Computer Vision.</small>
+            </p>
         </div>
     </footer>
 

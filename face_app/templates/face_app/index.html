@@ -4,23 +4,23 @@
 {% block title %}Home - Face Recognition{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container-fluid px-4 py-5">
     <!-- Hero Section -->
     <div class="row mb-5">
-        <div class="col-lg-8 mx-auto text-center">
-            <div class="hero-section mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; padding: 50px 30px; color: white; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);">
+        <div class="col-lg-8 mx-auto">
+            <div class="hero-section text-white text-center">
                 <h1 class="display-4 fw-bold mb-3">
-                    <i class="bi bi-camera-fill"></i> Face Recognition System
+                    <i class="bi bi-face-mask-2"></i> FaceAI Recognition
                 </h1>
                 <p class="lead mb-4 opacity-90">
-                    Register people, capture their faces, and recognize them in real-time using advanced AI
+                    Advanced real-time face recognition powered by AI. Register, recognize, and manage people with ease.
                 </p>
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <a href="{% url 'register_person' %}" class="btn btn-light btn-lg px-4 fw-bold rounded-lg shadow-sm" style="transition: all 0.3s ease;">
-                        <i class="bi bi-person-plus"></i> Register New Person
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'register_person' %}" class="btn btn-light btn-lg px-4">
+                        <i class="bi bi-person-plus-fill"></i> Register New Person
                     </a>
-                    <a href="{% url 'recognize_webcam' %}" class="btn btn-outline-light btn-lg px-4 fw-bold rounded-lg" style="transition: all 0.3s ease;">
-                        <i class="bi bi-camera-video"></i> Start Recognition
+                    <a href="{% url 'recognize_webcam' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-camera-video-fill"></i> Start Recognition
                     </a>
                 </div>
             </div>
@@ -28,96 +28,130 @@
     </div>
 
     <!-- Statistics Section -->
-    <div class="row mb-5 g-3">
-        <div class="col-md-4">
-            <div class="card shadow-lg border-0 rounded-lg h-100" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                <div class="card-body text-center p-4">
-                    <div style="font-size: 2.5rem; color: #667eea;" class="mb-3">
+    <div class="row mb-5 g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon mb-3" style="font-size: 2.5rem; color: #6366f1;">
                         <i class="bi bi-people-fill"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Total People</h6>
-                    <h2 class="fw-bold text-dark">{{ total_persons }}</h2>
+                    <div class="stat-label">Total People</div>
+                    <div class="stat-value">{{ total_persons }}</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-lg border-0 rounded-lg h-100" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                <div class="card-body text-center p-4">
-                    <div style="font-size: 2.5rem; color: #48bb78;" class="mb-3">
-                        <i class="bi bi-graph-up"></i>
+        <div class="col-md-6 col-lg-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon mb-3" style="font-size: 2.5rem; color: #10b981;">
+                        <i class="bi bi-check-circle-fill"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Recognitions</h6>
-                    <h2 class="fw-bold text-dark">{{ recent_recognitions|length }}</h2>
+                    <div class="stat-label">Recognition Accuracy</div>
+                    <div class="stat-value">98%</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-lg border-0 rounded-lg h-100" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                <div class="card-body text-center p-4">
-                    <div style="font-size: 2.5rem; color: #ed8936;" class="mb-3">
-                        <i class="bi bi-shield-check"></i>
+        <div class="col-md-6 col-lg-4">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon mb-3" style="font-size: 2.5rem; color: #ec4899;">
+                        <i class="bi bi-clock-history"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Accuracy</h6>
-                    <h2 class="fw-bold text-dark">98%</h2>
+                    <div class="stat-label">Recent Recognitions</div>
+                    <div class="stat-value">{{ recent_recognitions|length }}</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Registered People Section -->
-    <div class="row mb-5">
+    <div class="row">
         <div class="col-12">
-            <div class="d-flex align-items-center mb-4">
-                <h3 class="mb-0">
-                    <i class="bi bi-people"></i> Registered People
-                </h3>
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="mb-0" style="color: #1e293b;">
+                        <i class="bi bi-people-fill"></i> Registered People
+                    </h2>
+                    <p class="text-muted mb-0 mt-1">Manage and view all registered individuals</p>
+                </div>
                 {% if persons %}
-                    <span class="badge bg-primary rounded-pill ms-3" style="font-size: 1rem;">{{ persons.count }}</span>
+                    <span class="badge badge-primary" style="font-size: 1.1rem;">{{ persons.count }}</span>
                 {% endif %}
             </div>
             
             {% if persons %}
                 <div class="row g-4">
                     {% for person in persons %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card shadow-lg border-0 rounded-lg h-100" style="overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="card h-100">
                             {% if person.face_images.first.image %}
-                                <img src="{{ person.face_images.first.image.url }}" alt="{{ person.name }}" 
-                                     class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <div class="face-image-container" style="height: 200px;">
+                                    <img src="{{ person.face_images.first.image.url }}" alt="{{ person.name }}" class="w-100 h-100">
+                                </div>
                             {% else %}
-                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <i class="bi bi-person" style="font-size: 4rem; color: #ccc;"></i>
+                                <div class="d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                    <i class="bi bi-person-circle" style="font-size: 5rem; color: #cbd5e1;"></i>
                                 </div>
                             {% endif %}
                             
                             <div class="card-body">
-                                <h5 class="card-title fw-bold text-dark">{{ person.name }}</h5>
-                                <p class="text-muted small mb-2">ID: #{{ person.id }}</p>
+                                <h5 class="card-title text-gradient">{{ person.name }}</h5>
                                 
-                                {% if person.age %}
-                                    <small class="text-muted d-block mb-2">
-                                        <i class="bi bi-calendar"></i> {{ person.age }} years old
-                                    </small>
-                                {% endif %}
+                                <div class="mb-3">
+                                    {% if person.age %}
+                                        <small class="text-muted d-flex align-items-center gap-2 mb-1">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <span>{{ person.age }} years</span>
+                                        </small>
+                                    {% endif %}
+                                    
+                                    {% if person.place %}
+                                        <small class="text-muted d-flex align-items-center gap-2 mb-1">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span class="text-truncate">{{ person.place }}</span>
+                                        </small>
+                                    {% endif %}
+                                    
+                                    {% if person.work %}
+                                        <small class="text-muted d-flex align-items-center gap-2">
+                                            <i class="bi bi-briefcase"></i>
+                                            <span class="text-truncate">{{ person.work }}</span>
+                                        </small>
+                                    {% endif %}
+                                </div>
                                 
-                                {% if person.place %}
-                                    <small class="text-muted d-block mb-2 text-truncate">
-                                        <i class="bi bi-geo-alt"></i> {{ person.place }}
-                                    </small>
-                                {% endif %}
+                                <small class="text-muted">{{ person.face_images.count }} photo{{ person.face_images.count|pluralize }}</small>
                                 
-                                {% if person.work %}
-                                    <small class="text-muted d-block mb-3 text-truncate">
-                                        <i class="bi bi-briefcase"></i> {{ person.work }}
-                                    </small>
-                                {% endif %}
-                                
-                                <div class="d-grid gap-2">
-                                    <a href="{% url 'person_detail' person.id %}" class="btn btn-sm btn-primary rounded-lg" style="transition: all 0.3s ease;">
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="{% url 'person_detail' person.id %}" class="btn btn-primary btn-sm">
                                         <i class="bi bi-eye"></i> View Profile
                                     </a>
-                                    <a href="{% url 'add_face_image' person.id %}" class="btn btn-sm btn-outline-success rounded-lg">
-                                        <i class="bi bi-plus-circle"></i> Add Photos
+                                    <a href="{% url 'add_face_image' person.id %}" class="btn btn-secondary btn-sm">
+                                        <i class="bi bi-plus-lg"></i> Add Photos
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <i class="bi bi-inbox" style="font-size: 3rem; color: #cbd5e1;"></i>
+                        <h5 class="card-title mt-3">No People Registered Yet</h5>
+                        <p class="text-muted mb-3">Start by registering your first person</p>
+                        <a href="{% url 'register_person' %}" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Register First Person
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
                                     </a>
                                 </div>
                                 

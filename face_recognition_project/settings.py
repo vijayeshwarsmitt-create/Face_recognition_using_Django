@@ -101,4 +101,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Face Recognition Settings
 FACE_ENCODING_MODEL = 'hog'  # or 'cnn' for GPU acceleration
-RECOGNITION_TOLERANCE = 0.6  # Lower is stricter matching
+RECOGNITION_TOLERANCE = 0.5  # 0.5 = balanced matching (lower = stricter, higher = lenient)

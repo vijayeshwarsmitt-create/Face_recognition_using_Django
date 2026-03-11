@@ -111,7 +111,7 @@ def recognize_webcam(request):
 @csrf_exempt
 @require_POST
 def api_recognize_face(request):
-    """API endpoint for real-time face recognition."""
+    """API endpoint for real-time face recognition with optimized performance."""
     try:
         data = json.loads(request.body)
         image_data = data.get('image')
@@ -125,9 +125,18 @@ def api_recognize_face(request):
         
         image_bytes = base64.b64decode(image_data)
         image = Image.open(BytesIO(image_bytes))
-        image_array = np.array(image.convert('RGB'))
         
-        # Get face encoding
+        # Convert to RGB (faster processing)
+        image = image.convert('RGB')
+        
+        # Resize for faster processing if too large
+        max_size = 640
+        if image.width > max_size or image.height > max_size:
+            image.thumbnail((max_size, max_size), Image.Resampling.LANCZOS)
+        
+        image_array = np.array(image)
+        
+        # Get face encoding with fast detection
         engine = get_recognition_engine()
         unknown_encoding = engine.encode_face_from_array(image_array)
         
@@ -143,12 +152,22 @@ def api_recognize_face(request):
             person_encodings = []
             for face_img in person.face_images.all():
                 encoding = face_img.get_encoding()
-                if encoding:
-                    person_encodings.append(np.array(encoding))
+                if encoding is not None:
+                    try:
+                        person_encodings.append(np.array(encoding))
+                    except:
+                        continue
             
             if person_encodings:
-                # Use average encoding
-                known_faces_dict[person.id] = np.mean(person_encodings, axis=0)
+                # Use average encoding for more robust matching
+                if len(person_encodings) > 0:
+                    known_faces_dict[person.id] = np.mean(person_encodings, axis=0)
+        
+        if not known_faces_dict:
+            return JsonResponse({
+                'status': 'no_training_data',
+                'message': 'No faces registered in database'
+            })
         
         # Recognize face
         matched_id, confidence = engine.recognize_face(unknown_encoding, known_faces_dict)
@@ -177,7 +196,8 @@ def api_recognize_face(request):
             })
     
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        import traceback
+        return JsonResponse({'error': str(e), 'trace': traceback.format_exc()}, status=500)
 
 
 def recognition_history(request):
